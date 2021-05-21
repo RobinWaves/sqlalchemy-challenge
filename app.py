@@ -82,7 +82,7 @@ def tobs():
                     filter(Measurement.station == "USC00519281").all()
     session.close()
 
-    # Create a list of TOBS fro the previous year
+    # Create a list of TOBS from the previous year
     all_tobs = list(np.ravel(results))
     
     return jsonify(all_tobs)
@@ -91,38 +91,35 @@ def tobs():
 def min_avg_max_start(start):
     # Get temp stats for dates starting at given start date inclusive #
     session = Session(engine)
-    results = session.query(Measurement.date, func.min(Measurement.tobs),\
-                    func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
-                    filter(Measurement.date >= start).all()
+    results = session.query(func.min(Measurement.tobs), 
+                            func.max(Measurement.tobs),
+                            func.avg(Measurement.tobs)).filter(Measurement.date >= start).all()
     session.close()
-
+    
     # Convert the query results to a dictionary
     all_tobs = []
-    for date, min, avg, max in results:
+    for min, avg, max in results:
         tobs_dict = {}
-        tobs_dict['Date'] = date
         tobs_dict['Min'] = min
         tobs_dict['Avg'] = avg
         tobs_dict['Max'] = max
         all_tobs.append(tobs_dict)
         
     return jsonify(all_tobs)
-    
 #############################################################################################
 @app.route("/api/v1.0/<start>/<end>")
 def min_avg_max_start_end(start, end):
-    # Get temp stat for dates in between start and end date inclusive #
+    # Get temp stats for dates in between start and end date inclusive #
     session = Session(engine)
-    results = session.query(Measurement.date, func.min(Measurement.tobs),\
-                    func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
-                    filter((Measurement.date >= start) & (Measurement.date <= end)).all()
+    results = session.query(func.min(Measurement.tobs),
+                            func.avg(Measurement.tobs), 
+                            func.max(Measurement.tobs)).filter((Measurement.date >= start) & (Measurement.date <= end)).all()
     session.close()
 
     # Convert the query results to a dictionary
     all_tobs = []
-    for date, min, avg, max in results:
+    for min, avg, max in results:
         tobs_dict = {}
-        tobs_dict['Date'] = date
         tobs_dict['Min'] = min
         tobs_dict['Avg'] = avg
         tobs_dict['Max'] = max
