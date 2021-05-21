@@ -8,7 +8,8 @@ from sqlalchemy import create_engine, func
 from flask import Flask, jsonify
 
 #### Database Setup ####
-engine = create_engine("sqlite:///hawaii.sqlite")
+engine = create_engine("sqlite:///Resources/hawaii.sqlite")
+
 # reflect an existing database into a new model
 Base = automap_base()
 # reflect the tables
@@ -26,7 +27,7 @@ def home():
     # List all available routes #
     return (
         f"Welcome to the Hawaii Climate API!<br/><br/>"
-        f"All Available Routes:<br/><br/>"
+        f"Available Routes:<br/><br/>"
         f"Precipitation (inches) from the last year of data:<br/>"
         f"/api/v1.0/precipitation<br/><br/>"
         f"A list of stations:<br/>"
@@ -56,18 +57,20 @@ def precipitation():
         prcp_dict["Date"] = date
         prcp_dict["Prcp"] = prcp
         all_prcp.append(prcp_dict)
+
     return jsonify(all_prcp)
 #############################################################################################
 @app.route("/api/v1.0/stations")
 def stations():
     # Get a list of stations from the dataset #
     session = Session(engine)
-    results = session.query(Station.name, Station.station).\
-                    order_by(Station.name).all()
+    results = session.query(Station.station, Station.name).\
+                    order_by(Station.station).all()
     session.close()
 
     # Create a list of all stations from the query results
     all_stations = list(np.ravel(results))
+
     return jsonify(all_stations)
 #############################################################################################
 @app.route("/api/v1.0/tobs")
@@ -81,6 +84,7 @@ def tobs():
 
     # Create a list of TOBS fro the previous year
     all_tobs = list(np.ravel(results))
+    
     return jsonify(all_tobs)
 #############################################################################################
 @app.route("/api/v1.0/<start>")
@@ -89,7 +93,7 @@ def min_avg_max_start(start):
     session = Session(engine)
     results = session.query(Measurement.date, func.min(Measurement.tobs),\
                     func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
-                    filter(Measurement.date >= start).group_by(Measurement.date).all()
+                    filter(Measurement.date >= start).all()
     session.close()
 
     # Convert the query results to a dictionary
@@ -101,7 +105,7 @@ def min_avg_max_start(start):
         tobs_dict['Avg'] = avg
         tobs_dict['Max'] = max
         all_tobs.append(tobs_dict)
-    tobs_dict = {}
+        
     return jsonify(all_tobs)
     
 #############################################################################################
@@ -111,8 +115,7 @@ def min_avg_max_start_end(start, end):
     session = Session(engine)
     results = session.query(Measurement.date, func.min(Measurement.tobs),\
                     func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
-                    filter((Measurement.date >= start) & (Measurement.date <= end)).\
-                    group_by(Measurement.date).all()
+                    filter((Measurement.date >= start) & (Measurement.date <= end)).all()
     session.close()
 
     # Convert the query results to a dictionary
@@ -124,6 +127,7 @@ def min_avg_max_start_end(start, end):
         tobs_dict['Avg'] = avg
         tobs_dict['Max'] = max
         all_tobs.append(tobs_dict)
+    
     return jsonify(all_tobs)
 #############################################################################################
 if __name__ == '__main__':
