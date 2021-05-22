@@ -13,6 +13,7 @@ Inside this repository you will find:
 "Images" directory - contains all plots and charts
 * PrecipitationBar - last 12 months of precipitation data in the dataset
 * TobsHist - last 12 months of temperature observation data for the station with the most observations
+* TripAvgTemp - trip average temperature using temp max and temp min as the error bar
  
 "climate.ipynb"- creates an engine to connect to sqlite database, reflects tables into classes, saves references to those classes and then creates a seesion to query the database. Closes the session when done with queries.
 #### Precipitation Analysis
@@ -43,6 +44,11 @@ Inside this repository you will find:
 * sets the date column as the DataFrame index and drops the date column
 * calculates the average temperature in June and December at all stations across all available years in the dataset
 * uses the t-test to determine whether the difference in the means is statistically significant
+### Temperature Analysis II
+
+* Historical data dates: 2017-08-01-2017 to 2017-08-07
+* uses a function called `calc_temps` that accepts a start date and end date in the format `%Y-%m-%d` and returns the minimum, average, and maximum temperatures for that range of dates
+* plot the min, avg, and max temperature from your previous query as a bar chart with an error bar
 
 ***
 Usage: 
