@@ -49,3 +49,4 @@ Usage:
 * Open the file climate.ipynb in jupyter notebook and run to preform the climate analysis and exploration queries.  
 * Run app.py and then open a browser window.  In the address bar type http://localhost:5000/ to query the Flask API using the available routes/endpoints.  
 * Open the file temp_analysis_bonus_1.ipynb in jupyter notebook and run to implement the temperature analysis I.
+* Open the file temp_analysis_bonus_2.ipynb in jupyter notebook and run to implement the temperature analysis II.
